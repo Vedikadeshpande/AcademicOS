@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
 import {
     LayoutDashboard, BookOpen, FileText, Brain,
-    BarChart3, Calendar, Sparkles, ChevronLeft, ChevronRight, Mic
+    BarChart3, Calendar, Sparkles, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import useUIStore from '../../stores/uiStore';
 
@@ -10,7 +10,6 @@ const navItems = [
     { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
     { to: '/subjects', icon: BookOpen, label: 'Subjects' },
     { to: '/quizzes', icon: Brain, label: 'Quizzes' },
-    { to: '/viva', icon: Mic, label: 'Viva Mode' },
     { to: '/flashcards', icon: FileText, label: 'Flashcards' },
     { to: '/study-plan', icon: Calendar, label: 'Study Plan' },
     { to: '/analytics', icon: BarChart3, label: 'Analytics' },
