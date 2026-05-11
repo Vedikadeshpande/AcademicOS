@@ -11,7 +11,7 @@ from app.database import init_db
 # before the first request hits the database.
 from app.models import subject, syllabus, upload, quiz, flashcard, study_plan as sp_model  # noqa: F401
 
-from app.routers import subjects, uploads, syllabus, analytics, quizzes, flashcards, pyq, study_plan, viva
+from app.routers import subjects, uploads, syllabus, analytics, quizzes, flashcards, pyq, study_plan
 
 
 @asynccontextmanager
@@ -53,7 +53,6 @@ app.include_router(quizzes.router)
 app.include_router(flashcards.router)
 app.include_router(pyq.router)
 app.include_router(study_plan.router)
-app.include_router(viva.router)
 
 
 @app.get("/")
