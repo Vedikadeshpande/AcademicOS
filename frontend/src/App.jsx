@@ -10,7 +10,6 @@ import FlashcardPage from './pages/FlashcardPage';
 import StudyPlanPage from './pages/StudyPlanPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import { SubjectsListPage } from './pages/PlaceholderPages';
-import VivaPage from './pages/VivaPage';
 import useUIStore from './stores/uiStore';
 
 
@@ -89,15 +88,6 @@ export default function App() {
                 <>
                   <TopBar title="Analytics" subtitle="Performance insights" />
                   <div className="p-6"><AnalyticsPage /></div>
-                </>
-              }
-            />
-            <Route
-              path="/viva"
-              element={
-                <>
-                  <TopBar title="Viva Mode" subtitle="AI Oral Examination" />
-                  <div className="p-6 h-[calc(100vh-80px)] overflow-hidden"><VivaPage /></div>
                 </>
               }
             />
