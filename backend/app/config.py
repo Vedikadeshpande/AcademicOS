@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite+aiosqlite:///./academic_os.db"
     UPLOAD_DIR: str = "./uploads"
     VECTOR_STORE_DIR: str = "./vector_store"
-    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+    GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
     GROQ_MODEL: str = "llama-3.3-70b-versatile" 
     SECRET_KEY: str = "academic-os-dev-secret-key"
 
