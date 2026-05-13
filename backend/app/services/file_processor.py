@@ -66,11 +66,11 @@ async def process_file(upload_id: str):
 
 def extract_pdf_text(file_path: str) -> list[dict]:
     """Extract text from PDF using PyPDF2."""
-    import PyPDF2
+    import pypdf
 
     pages = []
     with open(file_path, "rb") as f:
-        reader = PyPDF2.PdfReader(f)
+        reader = pypdf.PdfReader(f)
         for i, page in enumerate(reader.pages):
             text = page.extract_text() or ""
             pages.append({"page_num": i + 1, "text": text})

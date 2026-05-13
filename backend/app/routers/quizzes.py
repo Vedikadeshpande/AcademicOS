@@ -10,7 +10,7 @@ from app.models.quiz import QuizSession, QuizQuestion, QuizAnswer
 from app.models.syllabus import SyllabusTopic, SyllabusUnit
 from app.schemas.quiz import QuizStartRequest, QuizQuestionResponse, QuizSubmitRequest, QuizResultResponse, QuestionResult, ExamPaperRequest
 from app.services.question_generator import generate_questions, generate_mock_paper, generate_exam_paper
-from app.services.viva_service import evaluate_short_answer
+from app.services.llm_service import fast_llm_generate
 
 router = APIRouter(prefix="/api/quizzes", tags=["quizzes"])
 
@@ -257,22 +257,37 @@ async def submit_quiz(session_id: str, req: QuizSubmitRequest, db: AsyncSession 
                 display_answer = correct_letter
 
             elif q.question_type == "short":
-                # Short answer: use LLM evaluation, backed by topic content and stored hints.
+                # Short answer: use direct LLM evaluation
                 topic = topics.get(q.topic_id)
-                evaluation = await evaluate_short_answer(
-                    q.question_text,
-                    answer.user_answer,
-                    q.correct_answer or "",
-                    topic,
-                    q.marks,
-                    db,
-                )
+                topic_title = topic.title if topic else "this topic"
+                
+                eval_prompt = f"""Evaluate the student's answer for the following question.
+Question: {q.question_text}
+Correct Answer/Hint: {q.correct_answer or "N/A"}
+Topic: {topic_title}
+Student's Answer: {answer.user_answer}
+
+Provide a JSON response with:
+- "awarded_marks": (integer, 0 to {q.marks})
+- "analysis": (string, 1-2 sentences feedback)
+- "good_points": (list of strings)
+- "missing_points": (list of strings)
+- "mistakes": (list of strings)
+- "suggestions": (list of strings)
+"""
+                try:
+                    raw_eval = await fast_llm_generate(
+                        prompt=eval_prompt,
+                        system="You are an academic evaluator. Return ONLY JSON."
+                    )
+                    from app.services.llm_service import parse_json
+                    evaluation = parse_json(raw_eval)
+                except Exception:
+                    evaluation = {}
 
                 awarded = evaluation.get("awarded_marks", 0)
-                max_marks = evaluation.get("max_marks", q.marks)
-                is_correct = awarded == max_marks
+                is_correct = awarded >= (q.marks * 0.7)  # 70% threshold for 'correct'
                 total_awarded_marks += awarded
-
                 display_answer = evaluation.get("analysis", "Short answer evaluated.")
             else:
                 # For other question types with a stored correct_answer, keep existing fallback behavior.

@@ -10,6 +10,7 @@ import json
 import re
 import asyncio
 import httpx
+from app.services.llm_service import fast_llm_generate
 from typing import Optional
 from datetime import datetime
 from sqlalchemy import select
@@ -38,22 +39,12 @@ Rules:
 - Return ONLY a JSON array, no markdown"""
 
 
-async def _call_ollama(prompt: str, system: str, max_tokens: int = 1500, timeout: float = 60.0) -> Optional[str]:
-    """Call Ollama with configurable timeout."""
+async def _call_llm(prompt: str, system: str, max_tokens: int = 2000) -> Optional[str]:
+    """Call the configured LLM (Groq) for pre-generation."""
     try:
-        async with httpx.AsyncClient(timeout=timeout) as client:
-            payload = {
-                "model": settings.OLLAMA_MODEL,
-                "prompt": prompt,
-                "system": system,
-                "stream": False,
-                "options": {"num_predict": max_tokens, "temperature": 0.7}
-            }
-            resp = await client.post(f"{settings.OLLAMA_BASE_URL}/api/generate", json=payload)
-            if resp.status_code == 200:
-                return resp.json().get("response", "").strip()
+        return await fast_llm_generate(prompt, system, max_tokens=max_tokens)
     except Exception as e:
-        print(f"[PreGen] Ollama error: {e}")
+        print(f"[PreGen] LLM error: {e}")
     return None
 
 
@@ -166,7 +157,7 @@ Requirements:
 
 Return JSON array: [{{"question": "...", "options": {{"A": "...", "B": "...", "C": "...", "D": "..."}}, "correct": "A", "explanation": "..."}}]"""
 
-    raw = await _call_ollama(prompt, SYSTEM_QUIZ, max_tokens=2000)
+    raw = await _call_llm(prompt, SYSTEM_QUIZ if "multiple-choice" in prompt else SYSTEM_FLASH, max_tokens=2000)
     items = _parse_json_array(raw)
     
     stored = 0
@@ -225,7 +216,7 @@ Each flashcard should:
 
 Return JSON array: [{{"front": "What is...?", "back": "It is..."}}]"""
 
-    raw = await _call_ollama(prompt, SYSTEM_FLASH, max_tokens=1500)
+    raw = await _call_llm(prompt, SYSTEM_FLASH, max_tokens=1500)
     items = _parse_json_array(raw)
     
     stored = 0
