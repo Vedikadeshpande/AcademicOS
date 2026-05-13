@@ -11,7 +11,7 @@ from app.models.upload import Upload, MarkingScheme, Deadline
 from app.schemas.subject import (
     SubjectCreate, SubjectUpdate, SubjectResponse,
     MarkingSchemeCreate, MarkingSchemeResponse,
-    DeadlineCreate, DeadlineResponse,
+    DeadlineCreate, DeadlineResponse, DeadlineWithSubjectResponse,
 )
 
 router = APIRouter(prefix="/api/subjects", tags=["subjects"])
@@ -80,7 +80,7 @@ async def create_subject(data: SubjectCreate, db: AsyncSession = Depends(get_db)
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/deadlines/all", response_model=list["DeadlineWithSubjectResponse"])
+@router.get("/deadlines/all", response_model=list[DeadlineWithSubjectResponse])
 async def list_all_deadlines(db: AsyncSession = Depends(get_db)):
     """Get all deadlines across all subjects, sorted by due date."""
     from app.schemas.subject import DeadlineWithSubjectResponse
