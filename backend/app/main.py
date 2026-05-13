@@ -59,7 +59,8 @@ app.add_middleware(
     allow_origins=[
     "http://localhost:5173",
     "https://academic-os-eta.vercel.app",
-],
+    "https://academic-30r37oig5-vedika-amol-deshpandes-projects.vercel.app",
+]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
