@@ -153,7 +153,6 @@ export default function QuizPage() {
                                     <div className="flex gap-2">
                                         {[
                                             { id: 'mcq', label: 'MCQ Mode' },
-                                            { id: 'short', label: 'Short Answer Mode' },
                                             { id: 'mock', label: 'Mock Test' },
                                         ].map(t => (
                                             <button
