@@ -16,7 +16,7 @@ export default function QuizPage() {
     const [selectedSubject, setSelectedSubject] = useState('');
     const [numQuestions, setNumQuestions] = useState(10);
     const [difficulty, setDifficulty] = useState('medium');
-    const [quizType, setQuizType] = useState('mcq');
+    const [quizType, setQuizType] = useState('topic');
     const [examType, setExamType] = useState('end_sem');
     const [sessionId, setSessionId] = useState(null);
     const [questions, setQuestions] = useState([]);
@@ -152,7 +152,7 @@ export default function QuizPage() {
                                     <label className="block text-xs font-medium text-gray-400 mb-1.5">Quiz Type</label>
                                     <div className="flex gap-2">
                                         {[
-                                            { id: 'mcq', label: 'MCQ Mode' },
+                                            { id: 'topic', label: 'MCQ Mode' },
                                             { id: 'mock', label: 'Mock Test' },
                                         ].map(t => (
                                             <button
