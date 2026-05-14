@@ -269,7 +269,6 @@ Student's Answer: {answer.user_answer}
 
 Provide a JSON response with:
 - "awarded_marks": (integer, 0 to {q.marks})
-- "analysis": (string, 1-2 sentences feedback)
 - "good_points": (list of strings)
 - "missing_points": (list of strings)
 - "mistakes": (list of strings)
@@ -313,7 +312,7 @@ Provide a JSON response with:
         if q.question_type == "short":
             if 'evaluation' in locals():
                 awarded_marks = evaluation.get("awarded_marks", 0)
-                feedback = evaluation.get("analysis", display_answer)
+                feedback = None
                 good_points = evaluation.get("good_points", [])
                 missing_points = evaluation.get("missing_points", [])
                 mistakes = evaluation.get("mistakes", [])
@@ -335,7 +334,7 @@ Provide a JSON response with:
             is_correct=is_correct,
             awarded_marks=awarded_marks,
             max_marks=q.marks,
-            feedback=feedback,
+            feedback=None,
             good_points=good_points,
             missing_points=missing_points,
             mistakes=mistakes,
